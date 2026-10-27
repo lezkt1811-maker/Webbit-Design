@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Webbit Design | Websites for Kansas City Small Businesses</title>
+<meta name="description" content="One-of-a-kind websites for Kansas City small businesses. Every design is sold to one business only.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{--bg:#f4f5f1;--card:#fff;--ink:#14201a;--muted:#5a665f;--line:#dde2d9;--accent:#1f8a4c;--accent-ink:#fff;--pin:#e8452c}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1411;--card:#171e1a;--ink:#ebf0ec;--muted:#9aa79f;--line:#28322c;--accent:#3fc178;--accent-ink:#06120b;--pin:#ff6a4f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 18px 60px}
+.brand{display:flex;align-items:center;gap:10px;font:900 1.05rem Archivo,system-ui,sans-serif;letter-spacing:.03em}
+h1{font:900 clamp(2.1rem,7vw,3.4rem)/1.04 Archivo,system-ui,sans-serif;margin:22px 0 12px;max-width:18ch}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{color:var(--muted);font-size:1.15rem;max-width:52ch;margin:0}
+.points{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0;padding:0;list-style:none}
+.points li{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-weight:600;font-size:.95rem}
+h2{font:700 .82rem Archivo,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:46px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column}
+.tile:hover,.tile:focus-visible{border-color:var(--accent);outline:none}
+.thumb{height:300px;overflow:hidden;background:#fff;pointer-events:none}
+.thumb iframe{width:calc(100% / .66);height:calc(300px / .66);border:0;transform:scale(.66);transform-origin:0 0}
+@media(max-width:560px){.thumb iframe{width:calc(100% / .88);height:calc(380px / .88);transform:scale(.88)}.thumb{height:380px}}
+.meta{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.meta b{font:700 1rem Archivo,system-ui,sans-serif}
+.meta span{color:var(--muted);font-size:.88rem}
+.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.price{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.price.best{border:2px solid var(--accent)}
+.price h3{font:700 1.1rem Archivo,system-ui,sans-serif;margin:0}
+.price .n{font:900 1.8rem Archivo,system-ui,sans-serif;margin:4px 0}
+.price p{margin:0;color:var(--muted)}
+.cta{margin-top:46px;background:var(--ink);color:var(--bg);border-radius:16px;padding:26px}
+.cta h3{font:900 1.6rem Archivo,system-ui,sans-serif;margin:0 0 6px}
+.cta p{margin:0;opacity:.85}
+footer{color:var(--muted);font-size:.85rem;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <svg width="24" height="30" viewBox="0 0 26 32" aria-hidden="true"><path d="M13 1C6.4 1 1 6.2 1 12.7 1 21.5 13 31 13 31s12-9.5 12-18.3C25 6.2 19.6 1 13 1z" fill="var(--pin)"/><circle cx="13" cy="12.5" r="4.6" fill="var(--bg)"/></svg>
+    WEBBIT DESIGN
+  </div>
+
+  <h1>A website that's <em>only yours.</em></h1>
+  <p class="lede">I build fast, mobile-friendly websites for Kansas City small businesses. Every design is sold to one business only. Once it's yours, nobody else in KC gets it.</p>
+  <ul class="points">
+    <li>📱 Looks great on phones</li>
+    <li>📞 One-tap call button</li>
+    <li>⚡ Live in days, not weeks</li>
+    <li>🔒 Exclusive design</li>
+  </ul>
+
+  <h2>Designs (examples with sample businesses)</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2>Pricing</h2>
+  <div class="prices">
+    <div class="price"><h3>Google Maps listing</h3><div class="n">$75</div><p>Show up on the map with hours, photos, and a call button.</p></div>
+    <div class="price"><h3>One-page website</h3><div class="n">$250</div><p>Any available design, filled in with your business.</p></div>
+    <div class="price best"><h3>Get Found bundle</h3><div class="n">$350</div><p>Website + Google Maps listing + online payment button.</p></div>
+  </div>
+
+  <div class="cta">
+    <h3>Want to see yours?</h3>
+    <p>Tell me your business name and I'll show you a preview built for you, free to look at, no pressure.</p>
+  </div>
+
+  <footer>© 2026 Webbit Design · Kansas City, MO</footer>
+</div>
+<script>
+const DESIGNS=[
+  {id:"bold-block",name:"Bold Block",biz:"Rosa's Tacos"},
+  {id:"neon-night",name:"Neon Night",biz:"Fade Factory"},
+  {id:"clean-card",name:"Clean Card",biz:"Bright Nest Cleaning"},
+  {id:"street-poster",name:"Street Poster",biz:"Northland Mowing"},
+  {id:"chalkboard",name:"Chalkboard",biz:"Smoke Signal BBQ"},
+  {id:"minimal-line",name:"Minimal Line",biz:"Holloway Auto Repair"}
+];
+const g=document.getElementById("grid");
+DESIGNS.forEach(d=>{
+  const a=document.createElement("a");a.className="tile";a.href="examples/"+d.id+".html";
+  a.innerHTML='<div class="thumb"><iframe loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div><div class="meta"><b></b><span></span></div>';
+  a.querySelector("iframe").src="examples/"+d.id+".html";
+  a.querySelector("b").textContent=d.name;
+  a.querySelector("span").textContent="Sample: "+d.biz;
+  g.appendChild(a);
+});
+</script>
+</body>
+</html>
