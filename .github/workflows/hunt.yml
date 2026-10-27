@@ -1,0 +1,37 @@
+name: Business Hunter
+
+on:
+  workflow_dispatch:
+    inputs:
+      query:
+        description: "Kind of business (barber, food truck, plumber, lawn care...)"
+        required: true
+        default: "barber"
+      area:
+        description: "Where (city, state)"
+        required: true
+        default: "Gladstone, MO"
+
+permissions:
+  contents: read
+
+jobs:
+  hunt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Search Google for businesses with no website
+        env:
+          GOOGLE_PLACES_KEY: ${{ secrets.GOOGLE_PLACES_KEY }}
+          QUERY: ${{ inputs.query }}
+          AREA: ${{ inputs.area }}
+        run: node tools/hunt.mjs
+      - name: Save the lead list
+        uses: actions/upload-artifact@v4
+        with:
+          name: leads
+          path: leads.json
+          retention-days: 7

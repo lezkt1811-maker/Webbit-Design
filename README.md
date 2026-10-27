@@ -55,3 +55,21 @@ The easiest way to fill these in is **Site Studio**, which does it automatically
 
 Settings → Pages → Deploy from branch → `main` / root → Save.
 It will be live at `https://lezkt1811-maker.github.io/Webbit-Design/`.
+
+## Business Hunter (finds businesses with no website)
+
+**One-time setup**
+1. Get a Google Places API key: go to console.cloud.google.com, create a project, turn on **Places API (New)**, then **APIs & Services → Credentials → Create credentials → API key**. Google asks for a card, but the monthly free allowance covers normal use. Set a budget alert to be safe.
+2. In this repo: **Settings → Secrets and variables → Actions → New repository secret**. Name it `GOOGLE_PLACES_KEY` and paste the key.
+
+**Every time**
+1. **Actions → Business Hunter → Run workflow.** Type a kind of business (`barber`, `food truck`, `lawn care`...) and a city (`Gladstone, MO`).
+2. When it finishes (about 30 seconds), open the run and download **leads** under Artifacts.
+3. Open `hunter.html` on your GitHub Pages site and load that file.
+4. Each business gets a design picked for its type. Tap **Preview their site** to see it with their name, phone, address and hours filled in.
+5. Track each one: New → Previewed → Pitched → Sold / No.
+
+Notes:
+- "No website" means none is listed on their Google profile. Double-check with a quick search before pitching.
+- Lead lists auto-delete from GitHub after 7 days. Your statuses stay saved on your phone.
+- Previews are for showing the owner in person. Don't publish a site under a business's name until they've paid.

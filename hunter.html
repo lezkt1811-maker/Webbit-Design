@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Business Hunter | Webbit Design</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Source+Sans+3:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--bg:#f3f4f0;--card:#fff;--ink:#16201a;--muted:#5b6760;--line:#dce1d8;--accent:#1f8a4c;--accent-ink:#fff;--warn:#b4412c}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1411;--card:#171e1a;--ink:#ebf0ec;--muted:#9aa79f;--line:#28322c;--accent:#3fc178;--accent-ink:#06120b;--warn:#ff8a70}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Source Sans 3",system-ui,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 60px;display:flex;flex-direction:column;gap:16px}
+h1{font:900 1.8rem Archivo,system-ui,sans-serif;margin:0}
+.sub{color:var(--muted);margin:4px 0 0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.steps{margin:0;padding-left:20px;color:var(--muted)}
+.steps li{margin:4px 0}
+.btn{font:700 .95rem Archivo,system-ui,sans-serif;border:0;border-radius:10px;padding:11px 14px;background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.f{font:600 .85rem "Source Sans 3",sans-serif;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;cursor:pointer}
+.f[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.summary{color:var(--muted);font-size:.92rem}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px}
+.lead h3{font:700 1.15rem Archivo,system-ui,sans-serif;margin:0}
+.meta{color:var(--muted);font-size:.93rem;display:flex;flex-wrap:wrap;gap:4px 14px}
+.meta a{color:inherit}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px}
+.pill{font:700 .7rem Archivo,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:3px 9px;background:var(--bg);border:1px solid var(--line)}
+.pill.Sold{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pill.No{color:var(--warn)}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+dialog{width:min(440px,96vw);height:min(860px,94vh);padding:0;border:0;border-radius:16px;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#000a}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.dhead b{font-family:Archivo,sans-serif}
+dialog iframe{width:100%;height:calc(100% - 112px);border:0;background:#fff}
+.dfoot{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.dfoot .btn{flex:1}
+.msg{font-size:.9rem;color:var(--muted);min-height:1.2em;margin:0;padding:0 12px 8px}
+#code{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Business Hunter</h1>
+    <p class="sub">Kansas City businesses with no website on Google, ready for a preview.</p>
+  </header>
+
+  <section class="panel">
+    <ol class="steps">
+      <li>On GitHub, open <b>Actions → Business Hunter → Run workflow</b>. Type a kind of business and a city.</li>
+      <li>When it finishes, open the run and download <b>leads</b> under Artifacts.</li>
+      <li>Load that file here (the .zip is fine).</li>
+    </ol>
+    <div class="bar" style="margin-top:12px">
+      <label class="btn" for="file">Load lead list</label>
+      <input id="file" type="file" accept=".zip,.json,application/zip,application/json" hidden>
+      <span class="summary" id="summary">No list loaded yet.</span>
+    </div>
+  </section>
+
+  <div class="filters" id="filters"></div>
+  <div id="list"><p class="empty">Load a lead list to see businesses here.</p></div>
+</div>
+
+<dialog id="dlg">
+  <div class="dhead"><b id="dtitle">Preview</b><button class="btn ghost" id="dclose" type="button">Close</button></div>
+  <iframe id="frame" title="Website preview"></iframe>
+  <p class="msg" id="dmsg"></p>
+  <div class="dfoot">
+    <button class="btn" id="dcopy" type="button">Copy website code</button>
+  </div>
+  <textarea id="code" readonly></textarea>
+</dialog>
+
+<script>
+const DESIGNS=[["bold-block","Bold Block"],["neon-night","Neon Night"],["clean-card","Clean Card"],["street-poster","Street Poster"],["chalkboard","Chalkboard"],["minimal-line","Minimal Line"]];
+const STATUSES=["New","Previewed","Pitched","Sold","No"];
+const KEY="webbit-hunter-v1";
+const TYPES=[
+  {re:/barber|hair|salon|beauty|nail|lash|spa/i,icon:"✂️",color:"#7c3aed",design:"neon-night",tag:"Fresh cuts and clean looks. Walk-ins welcome.",svc:["Haircut","Styling","Beard trim"]},
+  {re:/restaurant|food|taco|bbq|barbecue|grill|cafe|coffee|bakery|truck|pizza|diner/i,icon:"🌮",color:"#c2410c",design:"chalkboard",tag:"Made fresh, served fast.",svc:["Daily specials","Catering","Takeout"]},
+  {re:/lawn|landscap|garden|tree|mow/i,icon:"🌿",color:"#1f8a4c",design:"street-poster",tag:"Lawns that make the neighbors jealous.",svc:["Mowing & edging","Cleanups","Landscaping"]},
+  {re:/auto|car|mechanic|tire|repair|body shop/i,icon:"🔧",color:"#b91c1c",design:"minimal-line",tag:"Honest repairs at fair prices.",svc:["Diagnostics","Brakes","Oil change"]},
+  {re:/clean|maid|janitor|wash/i,icon:"✨",color:"#0e7490",design:"clean-card",tag:"Spotless homes and offices.",svc:["Standard clean","Deep clean","Move-out clean"]},
+  {re:/plumb|electric|hvac|handyman|roof|contract|paint|construct/i,icon:"🛠️",color:"#1d4ed8",design:"bold-block",tag:"Reliable work, done right the first time.",svc:["Repairs","Installations","Free estimates"]}
+];
+const DEFAULT_TYPE={icon:"⭐",color:"#111827",design:"bold-block",tag:"Proudly serving our neighbors.",svc:["Call for services"]};
+
+let state={leads:[],meta:null,status:{},design:{}},filter="All",current=null;
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)state=Object.assign(state,s)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const typeOf=l=>TYPES.find(t=>t.re.test(l.category+" "+l.name))||DEFAULT_TYPE;
+function cityOf(addr){const p=String(addr).split(",").map(s=>s.trim());if(p.length>=3){const st=(p[p.length-2]||"").split(" ")[0];return p[p.length-3]+(st?", "+st:"")}return addr}
+function hoursOf(h){if(!h||!h.length)return"Call for hours";return h.map(d=>d.replace(/^(\w{3})\w*:\s*/,"$1 ")).join(" · ")}
+
+const cache={};
+async function template(id){if(!cache[id]){const r=await fetch("designs/"+id+".html");if(!r.ok)throw new Error("design");cache[id]=await r.text()}return cache[id]}
+function fill(tpl,l){
+  const t=typeOf(l);
+  const map={NAME:esc(l.name),TAGLINE:esc(t.tag),PHONE:esc(l.phone||"Call us"),TEL:esc((l.phone||"").replace(/[^\d+]/g,"")),
+    AREA:esc(cityOf(l.address)),HOURS:esc(hoursOf(l.hours)),ADDRESS:esc(l.address),EXTRA:"",ICON:t.icon,COLOR:t.color,
+    YEAR:String(new Date().getFullYear()),SERVICES:t.svc.map(s=>`<li><span>${esc(s)}</span></li>`).join("")};
+  return tpl.replace(/\{\{(\w+)\}\}/g,(m,k)=>k in map?map[k]:m).replace(/<p>\s*<\/p>/g,"");
+}
+
+function renderFilters(){
+  const counts={All:state.leads.length};STATUSES.forEach(s=>counts[s]=0);
+  state.leads.forEach(l=>counts[state.status[l.id]||"New"]++);
+  $("filters").innerHTML="";
+  ["All",...STATUSES].forEach(s=>{const b=document.createElement("button");b.className="f";b.type="button";b.textContent=`${s} (${counts[s]})`;b.setAttribute("aria-pressed",s===filter);b.onclick=()=>{filter=s;render()};$("filters").appendChild(b)});
+}
+function render(){
+  renderFilters();
+  const m=state.meta;
+  $("summary").textContent=m?`"${m.query}" in ${m.area}: ${state.leads.length} with no website (out of ${m.checked} checked).`:"No list loaded yet.";
+  const list=$("list");list.innerHTML="";
+  const rows=state.leads.filter(l=>filter==="All"||(state.status[l.id]||"New")===filter);
+  if(!state.leads.length){list.innerHTML='<p class="empty">Load a lead list to see businesses here.</p>';return}
+  if(!rows.length){list.innerHTML='<p class="empty">Nothing in this group yet.</p>';return}
+  const box=document.createElement("div");box.style.cssText="display:grid;gap:12px";
+  rows.forEach(l=>{
+    const st=state.status[l.id]||"New",t=typeOf(l),des=state.design[l.id]||t.design;
+    const el=document.createElement("article");el.className="lead";
+    el.innerHTML=`<div class="row" style="justify-content:space-between"><h3></h3><span class="pill ${st}">${st}</span></div>
+      <div class="meta"><span class="cat"></span><span class="addr"></span>${l.phone?`<a class="tel"></a>`:""}${l.maps?`<a class="map" target="_blank" rel="noopener">Google Maps ↗</a>`:""}</div>
+      <div class="row"><select class="des" aria-label="Design">${DESIGNS.map(([id,n])=>`<option value="${id}"${id===des?" selected":""}>${n}</option>`).join("")}</select>
+      <button class="btn pv" type="button">Preview their site</button>
+      <select class="st" aria-label="Status">${STATUSES.map(s=>`<option${s===st?" selected":""}>${s}</option>`).join("")}</select></div>`;
+    el.querySelector("h3").textContent=l.name;
+    el.querySelector(".cat").textContent=t.icon+" "+l.category;
+    el.querySelector(".addr").textContent=l.address;
+    if(l.phone){const a=el.querySelector(".tel");a.textContent=l.phone;a.href="tel:"+l.phone.replace(/[^\d+]/g,"")}
+    if(l.maps)el.querySelector(".map").href=l.maps;
+    el.querySelector(".des").onchange=e=>{state.design[l.id]=e.target.value;save()};
+    el.querySelector(".st").onchange=e=>{state.status[l.id]=e.target.value;save();render()};
+    el.querySelector(".pv").onclick=()=>openPreview(l);
+    box.appendChild(el);
+  });
+  list.appendChild(box);
+}
+async function openPreview(l){
+  current=l;const id=state.design[l.id]||typeOf(l).design;
+  $("dtitle").textContent=l.name;$("dmsg").textContent="";
+  try{const html=fill(await template(id),l);$("frame").srcdoc=html;$("code").value=html}
+  catch(e){$("frame").srcdoc="";$("dmsg").textContent="Couldn't load the design. Open this page from the live GitHub Pages link, not as a file."}
+  if((state.status[l.id]||"New")==="New"){state.status[l.id]="Previewed";save();render()}
+  $("dlg").showModal();
+}
+$("dclose").onclick=()=>$("dlg").close();
+$("dcopy").onclick=()=>{
+  const code=$("code").value;
+  const fb=()=>{const c=$("code");c.style.display="block";c.style.cssText="display:block;width:100%;height:80px";c.select();$("dmsg").textContent="Auto-copy was blocked. Code is selected: tap Copy."};
+  try{navigator.clipboard.writeText(code).then(()=>{$("dmsg").textContent="Copied. Paste into the client's repo as index.html after they pay."},fb)}catch(e){fb()}
+};
+$("file").onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    let text;
+    if(/\.zip$/i.test(f.name)||f.type.includes("zip")){
+      const zip=await JSZip.loadAsync(f);const entry=zip.file(/leads\.json$/i)[0];
+      if(!entry)throw new Error("No leads.json in that zip.");text=await entry.async("string");
+    }else text=await f.text();
+    const data=JSON.parse(text);
+    if(!Array.isArray(data.leads))throw new Error("That file isn't a lead list.");
+    const seen=new Set(state.leads.map(l=>l.id));
+    data.leads.forEach(l=>{if(!seen.has(l.id))state.leads.push(l)});
+    state.meta={query:data.query,area:data.area,checked:data.checked};
+    filter="All";save();render();
+  }catch(err){$("summary").textContent=(err&&err.message)||"Couldn't read that file."}
+  e.target.value="";
+};
+render();
+</script>
+</body>
+</html>
