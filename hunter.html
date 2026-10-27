@@ -86,10 +86,10 @@ const DESIGNS=[["bold-block","Bold Block"],["neon-night","Neon Night"],["clean-c
 const STATUSES=["New","Previewed","Pitched","Sold","No"];
 const KEY="webbit-hunter-v1";
 const TYPES=[
-  {re:/barber|hair|salon|beauty|nail|lash|spa/i,icon:"✂️",color:"#7c3aed",design:"neon-night",tag:"Fresh cuts and clean looks. Walk-ins welcome.",svc:["Haircut","Styling","Beard trim"]},
+  {re:/barber|\bhair|salon|beauty|nail|lash|\bspa\b/i,icon:"✂️",color:"#7c3aed",design:"neon-night",tag:"Fresh cuts and clean looks. Walk-ins welcome.",svc:["Haircut","Styling","Beard trim"]},
   {re:/restaurant|food|taco|bbq|barbecue|grill|cafe|coffee|bakery|truck|pizza|diner/i,icon:"🌮",color:"#c2410c",design:"chalkboard",tag:"Made fresh, served fast.",svc:["Daily specials","Catering","Takeout"]},
-  {re:/lawn|landscap|garden|tree|mow/i,icon:"🌿",color:"#1f8a4c",design:"street-poster",tag:"Lawns that make the neighbors jealous.",svc:["Mowing & edging","Cleanups","Landscaping"]},
-  {re:/auto|car|mechanic|tire|repair|body shop/i,icon:"🔧",color:"#b91c1c",design:"minimal-line",tag:"Honest repairs at fair prices.",svc:["Diagnostics","Brakes","Oil change"]},
+  {re:/lawn|landscap|garden|\btree|mow/i,icon:"🌿",color:"#1f8a4c",design:"street-poster",tag:"Lawns that make the neighbors jealous.",svc:["Mowing & edging","Cleanups","Landscaping"]},
+  {re:/\bauto|\bcars?\b|mechanic|\btire|repair|body shop/i,icon:"🔧",color:"#b91c1c",design:"minimal-line",tag:"Honest repairs at fair prices.",svc:["Diagnostics","Brakes","Oil change"]},
   {re:/clean|maid|janitor|wash/i,icon:"✨",color:"#0e7490",design:"clean-card",tag:"Spotless homes and offices.",svc:["Standard clean","Deep clean","Move-out clean"]},
   {re:/plumb|electric|hvac|handyman|roof|contract|paint|construct/i,icon:"🛠️",color:"#1d4ed8",design:"bold-block",tag:"Reliable work, done right the first time.",svc:["Repairs","Installations","Free estimates"]}
 ];
